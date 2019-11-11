@@ -204,6 +204,7 @@ bool OpusVorbisDecoder::openOpus(const WebMDemuxer &demuxer)
 	if (!opusErr)
 	{
 		m_numSamples = demuxer.getSampleRate() * 0.06 + 0.5; //Maximum frame size (for 60 ms frame)
+		//m_numSamples = demuxer.getSampleRate() + 0.5; //Maximum frame size (for 60 ms frame)
 		return true;
 	}
 	return false;

@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
 
 WebMFrame::WebMFrame() :
 	bufferSize(0), bufferCapacity(0),
@@ -56,14 +57,12 @@ WebMDemuxer::WebMDemuxer(mkvparser::IMkvReader *reader, int videoTrack, int audi
 	long long pos = 0;
 	if (mkvparser::EBMLHeader().Parse(m_reader, pos))
 		return;
-
 	if (mkvparser::Segment::CreateInstance(m_reader, pos, m_segment))
 		return;
-
 	if (m_segment->Load() < 0)
 		return;
 
-	const mkvparser::Tracks *tracks = m_segment->GetTracks();
+    const mkvparser::Tracks *tracks = m_segment->GetTracks();
 	const unsigned long tracksCount = tracks->GetTracksCount();
 	int currVideoTrack = -1, currAudioTrack = -1;
 	for (unsigned long i = 0; i < tracksCount; ++i)

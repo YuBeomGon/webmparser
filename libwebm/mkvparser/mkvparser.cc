@@ -19,6 +19,7 @@
 #include <string.h>
 
 #include "common/webmids.h"
+#include <iostream>
 
 namespace mkvparser {
 const float MasteringMetadata::kValueNotPresent = FLT_MAX;
@@ -541,7 +542,6 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
     return status;
 
   pos = 0;
-
   // Scan until we find what looks like the first byte of the EBML header.
   const long long kMaxScanBytes = (available >= 1024) ? 1024 : available;
   const unsigned char kEbmlByte0 = 0x1A;
@@ -560,10 +560,9 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
 
     ++pos;
   }
-
   long len = 0;
   const long long ebml_id = ReadID(pReader, pos, len);
-
+  std::cout<<"ebml_id : "<<ebml_id<<" len : " <<len<<std::endl;
   if (ebml_id == E_BUFFER_NOT_FULL)
     return E_BUFFER_NOT_FULL;
 
@@ -575,7 +574,6 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
 
   // Read length of size field.
   long long result = GetUIntLength(pReader, pos, len);
-
   if (result < 0)  // error
     return E_FILE_FORMAT_INVALID;
   else if (result > 0)  // need more data
@@ -589,7 +587,6 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
 
   if ((available - pos) < len)
     return pos + len;  // try again later
-
   // Read the EBML header size.
   result = ReadUInt(pReader, pos, len);
 
@@ -609,7 +606,6 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
   const long long end = pos + result;
 
   Init();
-
   while (pos < end) {
     long long id, size;
 
@@ -663,7 +659,6 @@ long long EBMLHeader::Parse(IMkvReader* pReader, long long& pos) {
 
     pos += size;
   }
-
   if (pos != end)
     return E_FILE_FORMAT_INVALID;
 
